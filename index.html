@@ -5,28 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>打飞机 - 经典对战</title>
-    <!-- 国内加速 CDN -->
+    <!-- 国内极速 CDN -->
     <script src="https://lib.baomitu.com/tailwindcss/2.2.19/tailwind.min.js"></script>
     <link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.staticfile.org/peerjs/1.5.2/peerjs.min.js"></script>
+    <script src="https://lib.baomitu.com/peerjs/1.5.2/peerjs.min.js"></script>
     
-    <!-- 引入 Babel 用于在浏览器中实时解析 TSX (仅用于演示/简单部署，生产环境建议本地构建) -->
+    <!-- Babel 用于在手机浏览器中直接运行 TSX -->
     <script src="https://lib.baomitu.com/babel-standalone/7.22.10/babel.min.js"></script>
 
     <style>
         body {
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
             background-color: #0f172a;
             color: #f8fafc;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
-        .radar-grid {
-            background-image: linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px);
-            background-size: 10% 10%;
+        /* 针对手机横竖屏提示 */
+        @media screen and (orientation: landscape) and (max-height: 450px) {
+            .mobile-hide { display: none; }
         }
     </style>
 <script type="importmap">
@@ -41,7 +39,7 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- 注意：这里 type 改为 text/babel，以便 Babel 识别并转换 -->
+    <!-- Gitee 部署关键：确保路径是相对路径 ./ -->
     <script type="text/babel" data-type="module" src="./index.tsx"></script>
 </body>
 </html>
