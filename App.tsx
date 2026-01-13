@@ -32,6 +32,7 @@ const App: React.FC = () => {
 
   const initPeer = (isHost: boolean, joinId?: string) => {
     setPhase(GamePhase.CONNECTING);
+    // 默认使用 PeerJS 官方服务器，如果国内连接慢，建议部署自己的 PeerServer
     const peer = new Peer();
     peerRef.current = peer;
 
@@ -52,9 +53,11 @@ const App: React.FC = () => {
     peer.on('error', (err: any) => {
       console.error(err);
       if (err.type === 'peer-unavailable') {
-        alert("Opponent not found. Check the ID.");
+        alert("找不到对手，请检查房间 ID 是否正确。");
+      } else if (err.type === 'network') {
+        alert("网络连接不稳定，请重试。");
       } else {
-        alert("Connection error: " + err.type);
+        alert("连接错误: " + err.type);
       }
       setPhase(GamePhase.LOBBY);
     });
@@ -73,7 +76,7 @@ const App: React.FC = () => {
     });
 
     conn.on('close', () => {
-      alert("Opponent disconnected");
+      alert("对手断开了连接");
       window.location.reload();
     });
   };
@@ -101,7 +104,6 @@ const App: React.FC = () => {
     }
     document.body.removeChild(textArea);
 
-    // Also try modern API if available
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(peerId).catch(() => {});
     }
@@ -313,17 +315,17 @@ const App: React.FC = () => {
       {phase === GamePhase.CONNECTING && (
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-           <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-widest">Awaiting Hangar</h2>
+           <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-widest">等待机棚就绪</h2>
            <div 
              onClick={copyId}
              className="bg-slate-800 p-4 rounded-xl border border-slate-700 w-full mb-4 cursor-pointer active:bg-slate-750 transition-colors"
            >
-              <p className="text-slate-500 text-[10px] uppercase font-bold mb-1">Room ID (Click to Copy)</p>
-              <p className="text-blue-400 font-mono font-bold break-all">{peerId || 'GENERATING...'}</p>
-              {copied && <p className="text-[10px] text-emerald-500 mt-2 font-bold animate-pulse">COPIED TO CLIPBOARD!</p>}
+              <p className="text-slate-500 text-[10px] uppercase font-bold mb-1">房间 ID (点击复制)</p>
+              <p className="text-blue-400 font-mono font-bold break-all">{peerId || '生成中...'}</p>
+              {copied && <p className="text-[10px] text-emerald-500 mt-2 font-bold animate-pulse">已复制到剪贴板！</p>}
            </div>
-           {peerId && <p className="text-xs text-slate-400 leading-relaxed italic">Share this code with your wingman to start the sortie.</p>}
-           <button onClick={() => window.location.reload()} className="mt-12 text-slate-500 text-xs uppercase font-bold border-b border-slate-700">Abort Mission</button>
+           {peerId && <p className="text-xs text-slate-400 leading-relaxed italic">将此代码分享给你的僚机即可开始任务。</p>}
+           <button onClick={() => window.location.reload()} className="mt-12 text-slate-500 text-xs uppercase font-bold border-b border-slate-700">中止任务</button>
         </div>
       )}
       {(phase === GamePhase.PLACEMENT_P1 || phase === GamePhase.PLACEMENT_P2) && (
@@ -337,8 +339,8 @@ const App: React.FC = () => {
            <div className="relative mb-8">
               <i className="fa-solid fa-satellite-dish text-6xl text-blue-500 animate-pulse"></i>
            </div>
-           <h2 className="text-2xl font-black text-white mb-2 tracking-tighter">FLEET READY</h2>
-           <p className="text-slate-400 text-sm">Waiting for the enemy to finalize their aircraft positions...</p>
+           <h2 className="text-2xl font-black text-white mb-2 tracking-tighter">机队已就绪</h2>
+           <p className="text-slate-400 text-sm">正在等待敌方确认战机部署...</p>
         </div>
       )}
       {phase === GamePhase.TRANSITION && (

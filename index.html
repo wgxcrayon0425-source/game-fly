@@ -1,13 +1,18 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Air Strike - Classic H5 Battle</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <title>打飞机 - 经典对战</title>
+    <!-- 国内加速 CDN -->
+    <script src="https://lib.baomitu.com/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.staticfile.org/peerjs/1.5.2/peerjs.min.js"></script>
+    
+    <!-- 引入 Babel 用于在浏览器中实时解析 TSX (仅用于演示/简单部署，生产环境建议本地构建) -->
+    <script src="https://lib.baomitu.com/babel-standalone/7.22.10/babel.min.js"></script>
+
     <style>
         body {
             touch-action: manipulation;
@@ -27,15 +32,16 @@
 <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
+    "react-dom/": "https://lib.baomitu.com/react-dom/18.2.0/",
+    "react/": "https://lib.baomitu.com/react/18.2.0/",
+    "react": "https://lib.baomitu.com/react/18.2.0/react.production.min.js"
   }
 }
 </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <!-- 注意：这里 type 改为 text/babel，以便 Babel 识别并转换 -->
+    <script type="text/babel" data-type="module" src="./index.tsx"></script>
 </body>
 </html>
