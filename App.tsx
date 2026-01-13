@@ -51,7 +51,11 @@ const App: React.FC = () => {
 
     peer.on('error', (err: any) => {
       console.error(err);
-      alert("Connection error: " + err.type);
+      if (err.type === 'peer-unavailable') {
+        alert("Opponent not found. Check the ID.");
+      } else {
+        alert("Connection error: " + err.type);
+      }
       setPhase(GamePhase.LOBBY);
     });
   };
@@ -76,9 +80,31 @@ const App: React.FC = () => {
 
   const copyId = () => {
     if (!peerId) return;
-    navigator.clipboard.writeText(peerId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    
+    const textArea = document.createElement("textarea");
+    textArea.value = peerId;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch (err) {
+      console.error('Fallback copy failed', err);
+    }
+    document.body.removeChild(textArea);
+
+    // Also try modern API if available
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(peerId).catch(() => {});
+    }
   };
 
   const handleNetworkMessage = (msg: NetworkMessage) => {
